@@ -28,7 +28,7 @@ addLayer("A", {
 	    return dev
 	   },
        doReset(resettingLayer) {
-        if (resettingLayer == 'I') {
+        if (resettingLayer == 'P') {
             let kept = []
             layerDataReset(this.layer, kept)
         }
@@ -421,9 +421,16 @@ addLayer("A2", {
      name: "真正的重置",
      done() {return player.P.points.gte(1)}, 
      onComplete() {player.A2.points = player.A2.points.add(1)},
-     tooltip: "转生一次<br>没给你把成就重置已经算好了", 
+     tooltip: "转生一次<br>经过作者慎重考虑，最终还是决定重置成就", 
      textStyle: {'color': '#ffe125'},
         },
+        12: {
+            name: "Another Softcap",
+            done() {return player.P.points.gte(20)}, 
+            onComplete() {player.A2.points = player.A2.points.add(1)},
+            tooltip: "到达20个声望点数", 
+            textStyle: {'color': '#ffe125'},
+               },
     }
 })
 
@@ -1776,6 +1783,9 @@ addLayer("P", {
     layerShown(){return hasAchievement('A', 105)||hasAchievement('A2', 11)},
     branches: ['DC'],
     doReset(resettingLayer) {
+        if (resettingLayer == 'P') {
+        player.DC.points=player.P.points
+        }
         //if (layers[resettingLayer].row > layers[this.layer].row) {
      //let kept = ["unlocked", "upgrades","auto","challenges","milestones"]
      //layerDataReset(this.layer, kept)
@@ -1796,5 +1806,28 @@ addLayer("P", {
     {
         mult = 0
         return mult
+    },
+    buyables: {
+        11: {
+            title(){text = 'Booster'
+                return text
+            },
+            cost(x) { return new Decimal(20).pow(x) },
+            effect(x) {return new Decimal(1e10).pow(x)},
+            display() { return "每次购买使点数x1e10<br/>当前已购买了"+ getBuyableAmount('P', 11) +"次<br/>效果：点数获取x"+format(buyableEffect('P', 11))+'<br/>需求：'+format(new Decimal(20).pow(getBuyableAmount('P', 11)))+'声望点数（不消耗）' },
+            unlocked() {return true},
+            canAfford() { return player.P.points.gte(this.cost()) },
+            buy() {
+                //if(!hasUpgrade('CT', 51)) player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+    },
+    milestones: {
+        0: {
+            requirementDescription: "1 声望点数",
+            effectDescription: "重置后保留数量等于声望点数的二重压缩时间墙",
+            done() { return player.P.points.gte(1) }
+        },
     },
 })

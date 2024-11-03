@@ -41,9 +41,10 @@ let changelog = `<h1>Changelog:</h1><br>
 	    - DC层级增加1个里程碑，Co层级增加2个里程碑<br/>
 		- 增加3个成就与成就统计<br/>
 		- 增加了下一个层级(请等待下次更新)<br/>
-	<h3>v0.4 Prestige Update</h3><br>
+	<h3>v0.4 Prestige Update - test</h3><br>
 	    - 增加了声望层级，去除了一个里程碑<br/>
-		- 降低了二重压缩时间墙给点数加成的硬上限`
+		- 降低了二重压缩时间墙给点数加成的硬上限<br/>
+		- 11.3：又更改了一下`
 
 let winText = `恭喜！你 >暂时< 通关了！`
 
@@ -134,6 +135,7 @@ function getPointGen() {
 	if (n(challengeCompletions('DC', 14)).gte(1)&&!hasAchievement('DC', 42)) gain = gain.times(challengeEffect('DC', 14))
 	if (hasAchievement('DC', 43)) gain = gain.times(achievementEffect('DC', 43))
 	if (hasUpgrade('T', 54)&&!inChallenge('T',13)) gain = gain.times(buyableEffect('T', 11))
+	gain = gain.times(buyableEffect('P', 11))
 	if (hasUpgrade('T', 23)&&gain.lt(1)) gain = gain.pow(0.5)
 	if (hasChallenge('T', 12)) gain = gain.pow(1.01)
 	if (hasMilestone('DC', 1)) gain = gain.pow(1.01)
